@@ -60,11 +60,12 @@ def GetOptParser():
         * 'pickname' pick sequence with 'pattern' in name. * \
         * 'cutbefore' cuts sequence before 'pattern' occurance. * \
         * 'croptail' keeps only 'range_begin' nucleotides from the start of each sequence. *\
+        * 'ccrotate' circular rotate sequences so to start with 'range_begin' coordinate *\
         ")
 
     optionParser.add_argument('--range_begin',
         type=int, default=0,
-        help="For 'pick' action, set first index")
+        help="For 'pick' action, set first index, for ccrotate set the begin coordinate")
     optionParser.add_argument('--range_end',
         type=int, default=0,
         help="For 'pick' action, set last index")
@@ -228,6 +229,14 @@ def CircularRotate(input_fasta_entries, input_defdict, **options):
             rotated = entry[1][pos:] +  entry[1][:pos]
             input_fasta_entries[i][1] = rotated
 
+def CircularRotateByCoordinate(input_fasta_entries, input_defdict, **options):
+
+    coord = int(options.get('range_begin'))
+    for i, entry in enumerate(input_fasta_entries):
+        if len(entry[1]) > coord and coord > 0:
+            rotated = entry[1][coord:] +  entry[1][:coord]
+            input_fasta_entries[i][1] = rotated
+
 def PrintLength(input_fasta_entries, input_defdict, **options):
 
     for entry in input_fasta_entries:
@@ -318,7 +327,8 @@ ACTIONS = {
 'revcom' :   RevcomEntries,
 'pickname' : Pickname,
 'cutbefore' : Cutbefore,
-'croptail' : Croptail
+'croptail' : Croptail,
+'ccrotate' : CircularRotateByCoordinate
 }
 
 if __name__ == '__main__':
