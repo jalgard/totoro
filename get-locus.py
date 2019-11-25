@@ -18,10 +18,14 @@ def GetOptParser():
         action='store',
         help="Locus description in format Chr1,start,end or just Chr1.\nIn 1-based coordinate system")
 
+    optionParser.add_argument('--s', '--space',
+        action='store_true',
+        help="Store only prefix of fasta entry name before first space character")
+
     return optionParser
 
 
-def ReadFasta(input_lines):
+def ReadFasta(input_lines, split_space = False):
 
     fasta_data = []
 
@@ -30,7 +34,10 @@ def ReadFasta(input_lines):
         if len(line) < 1:
             continue
         if line[0] == '>':
-            fasta_data.append([line[1:],''])
+            if split_space == False:
+                fasta_data.append([line[1:],''])
+            else:
+                fasta_data.append([line[1:].split(' ')[0],''])
         else:
             fasta_data[-1][1] += line
 
@@ -79,7 +86,10 @@ if __name__ == '__main__':
         sys.stderr.write('No locus specified!\nExiting with an error!')
         exit()
 
-    fasta_entries = ReadFasta(inputSource)
+    split_space = False
+    if runArgs.s is not None:
+        split_space = True
+    fasta_entries = ReadFasta(inputSource, split_space)
 
     selected_locus_seq = None
     for entry in fasta_entries:
