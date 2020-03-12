@@ -314,10 +314,14 @@ def Croptail(input_fasta_entries, input_defdict, **options):
         input_fasta_entries[i][1] = input_fasta_entries[i][1][:plen]
 
 def RenameList(input_fasta_entries, input_defdict, **options):
+    names = []
+    with open(options.get('list'), 'r') as listfile:
+        for line in listfile:
+            names.append(line.rstrip().split('\t')[0])
 
     for i, entry in enumerate(input_fasta_entries):
-        if i < len(input_defdict):
-            input_fasta_entries[i][0] = input_defdict[i]
+        if i < len(names):
+            input_fasta_entries[i][0] = names[i]
 
 def SortList(input_fasta_entries, input_defdict, **options):
     order = []
