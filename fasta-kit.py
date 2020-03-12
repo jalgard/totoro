@@ -381,7 +381,8 @@ if __name__ == '__main__':
         'prefix' : runArgs.prefix,
         'range_begin': runArgs.range_begin,
         'range_end': runArgs.range_end,
-        'pattern' : runArgs.pattern
+        'pattern' : runArgs.pattern,
+        'list' : runArgs.l
     }
 
     # here is a good place to sort entries
