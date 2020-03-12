@@ -325,9 +325,10 @@ def SortList(input_fasta_entries, input_defdict, **options):
         for line in listfile:
             order.append(line.rstrip())
     sorted_fasta_entries = []
+    print(order)
     for name in order:
         for entry in input_fasta_entries:
-            if entry[0] == '>' + name:
+            if entry[0] == name:
                 sorted_fasta_entries.append(entry)
     input_fasta_entries[:] = list(sorted_fasta_entries)
 
