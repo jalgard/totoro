@@ -323,9 +323,9 @@ def SortList(input_fasta_entries, input_defdict, **options):
     order = []
     with open(options.get('list'), 'r') as listfile:
         for line in listfile:
-            order.append(line.rstrip())
+            order.append(line.rstrip().split('\t')[0])
     sorted_fasta_entries = []
-    print(order)
+
     for name in order:
         for entry in input_fasta_entries:
             if entry[0] == name:
