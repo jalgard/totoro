@@ -327,7 +327,7 @@ def SortList(input_fasta_entries, input_defdict, **options):
     sorted_fasta_entries = []
     for name in order:
         for entry in input_fasta_entries:
-            if entry[0] == name:
+            if entry[0] == '>' + name:
                 sorted_fasta_entries.append(entry)
     input_fasta_entries[:] = list(sorted_fasta_entries)
 
