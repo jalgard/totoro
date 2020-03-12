@@ -44,23 +44,25 @@ def GetOptParser():
         help="Action to perform on entries from .fasta\
         (for some actions user can provide a list file with entry names)\n \
         Actions implemented:\t \
-        * 'upper' make sequences uppercase, * \
-        * 'lower' make sequences lowercase, * \
-        * 'remove' remove listed sequences [require --list option], * \
-        * 'keep' keep listed sequences [require --list option], *\
-        * 'pick' pick sequences specified be index range, * \
-        * 'lrename' rename using list, * \
-        * 'srename' modify sequence title with splitter function, * \
-        * 'prename' rename using prefix and increment, *\
-        * 'crotate' circular rotate sequences so to start with leftmost 'pattern' occurance, *\
-        * 'falength' print length of entries in stdout in format 'enrty name   entry length', * \
-        * 'startswith' keep entries that start with 'pattern', * \
-        * 'haspat' keep entries that contain 'pattern', * \
-        * 'revcom' reverse-and-complement sequences. * \
-        * 'pickname' pick sequence with 'pattern' in name. * \
-        * 'cutbefore' cuts sequence before 'pattern' occurance. * \
-        * 'croptail' keeps only 'range_begin' nucleotides from the start of each sequence. *\
-        * 'ccrotate' circular rotate sequences so to start with 'range_begin' coordinate *\
+        * 'upper' make sequences uppercase, * \n\
+        * 'lower' make sequences lowercase, * \n\
+        * 'remove' remove listed sequences [require --list option], * \n\
+        * 'keep' keep listed sequences [require --list option], *\n\
+        * 'pick' pick sequences specified be index range, * \n\
+        * 'lrename' rename using list, * \n\
+        * 'srename' modify sequence title with splitter function, * \n\
+        * 'prename' rename using prefix and increment, *\n\
+        * 'crotate' circular rotate sequences so to start with leftmost 'pattern' occurance, *\n\
+        * 'falength' print length of entries in stdout in format 'enrty name   entry length', * \n\
+        * 'startswith' keep entries that start with 'pattern', * \n\
+        * 'haspat' keep entries that contain 'pattern', * \n\
+        * 'revcom' reverse-and-complement sequences. * \n\
+        * 'pickname' pick sequence with 'pattern' in name. * \n\
+        * 'cutbefore' cuts sequence before 'pattern' occurance. * \n\
+        * 'croptail' keeps only 'range_begin' nucleotides from the start of each sequence. *\n\
+        * 'ccrotate' circular rotate sequences so to start with 'range_begin' coordinate *\n\
+        * 'listrename' rename fasta entries using list of new names [require --list option] *\n\
+        * 'listsort' sorts fasta entries in order provided in list [require --list option] *\n\
         ")
 
     optionParser.add_argument('--range_begin',
@@ -119,7 +121,7 @@ def LoadList(input_list_file):
             if len(line) > 1:
                 selected_entries[line[0]] = line[1]
             else:
-                selected_entries[line[0]] = '1'
+                selected_entries[line[0]] = ''
 
     return selected_entries
 
@@ -311,6 +313,26 @@ def Croptail(input_fasta_entries, input_defdict, **options):
     for i, entry in enumerate(input_fasta_entries):
         input_fasta_entries[i][1] = input_fasta_entries[i][1][:plen]
 
+def RenameList(input_fasta_entries, input_defdict, **options):
+
+    for i, entry in enumerate(input_fasta_entries):
+        if i < len(input_defdict):
+            input_fasta_entries[i][0] = input_defdict[i]
+
+def SortList(input_fasta_entries, input_defdict, **options):
+    order = []
+    with open(options.get('list'), 'r') as listfile:
+        for line in listfile:
+            order.append(line.rstrip())
+    sorted_fasta_entries = []
+    for name in order:
+        for entry in input_fasta_entries:
+            if entry[0] == name:
+                sorted_fasta_entries.append(entry)
+    input_fasta_entries[:] = list(sorted_fasta_entries)
+
+
+
 ACTIONS = {
 'upper' :    UppercaseEntry,
 'lower' :    LowercaseEntry,
@@ -328,7 +350,9 @@ ACTIONS = {
 'pickname' : Pickname,
 'cutbefore' : Cutbefore,
 'croptail' : Croptail,
-'ccrotate' : CircularRotateByCoordinate
+'ccrotate' : CircularRotateByCoordinate,
+'listrename' : RenameList,
+'listsort' : SortList
 }
 
 if __name__ == '__main__':
