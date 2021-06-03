@@ -63,6 +63,7 @@ def GetOptParser():
         * 'ccrotate' circular rotate sequences so to start with 'range_begin' coordinate *\n\
         * 'listrename' rename fasta entries using list of new names [require --list option] *\n\
         * 'listsort' sorts fasta entries in order provided in list [require --list option] *\n\
+        * 'gccontent' prints table of GC content for each entry *\n\
         ")
 
     optionParser.add_argument('--range_begin',
@@ -336,7 +337,17 @@ def SortList(input_fasta_entries, input_defdict, **options):
                 sorted_fasta_entries.append(entry)
     input_fasta_entries[:] = list(sorted_fasta_entries)
 
-
+def GcContent(input_fasta_entries, input_defdict, **options):
+    for i, entry in enumerate(input_fasta_entries):
+        gc = 0.0
+        for nuc in entry[1].upper():
+            if nuc == 'G' or nuc == 'C':
+                gc += 1
+        gc = gc / entry[2]
+        gc = int(gc * 10000)
+        gc = float(gc) / 100
+        print('{}\t{}\t{}'.format(entry[0], gc, entry[2]))
+    exit()
 
 ACTIONS = {
 'upper' :    UppercaseEntry,
@@ -357,7 +368,8 @@ ACTIONS = {
 'croptail' : Croptail,
 'ccrotate' : CircularRotateByCoordinate,
 'listrename' : RenameList,
-'listsort' : SortList
+'listsort' : SortList,
+'gccontent' : GcContent
 }
 
 if __name__ == '__main__':
