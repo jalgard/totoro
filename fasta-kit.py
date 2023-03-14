@@ -9,8 +9,7 @@
     - remove sequences
     - rename entries
     - upper\lowercase convert
-
-    ...
+    
 
 '''
 
